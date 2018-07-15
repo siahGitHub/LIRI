@@ -13,6 +13,7 @@ var userInput = process.argv.slice(3).join(' ');
 const defaultSong = "The Sign";
 const defaultMovie = "Mr. Nobody"
 const FILE_NAME = 'random.txt';
+const LOG_FILE_NAME = 'liriLog.txt';
 
 
 
@@ -58,6 +59,7 @@ function myTweets() {
             for (i = 0; i < numOfTweets; i++) {
                 console.log(tweets[i].created_at);
                 console.log(tweets[i].text);
+                logIt("logging myTweets<>"+tweets[i].created_at+","+tweets[i].text);
 
             };
         };
@@ -78,7 +80,7 @@ function mySong(songname) {
             console.log("Preview Url: " + data.tracks.items[i].preview_url);
             console.log("Album Name: " + data.tracks.items[i].album.name);
             console.log("++++++++++++++++Next Track+++++++++++++++++++++++++++++++++++")
-
+            logIt("logging mySong<>"+data.tracks.items[i].album.artists[0].name+","+data.tracks.items[i].name+","+data.tracks.items[i].preview_url+","+data.tracks.items[i].album.name);
         };
     });
 };
@@ -108,12 +110,14 @@ function myMovie(moviename) {
             for (i = 0; i < json.Ratings.length; i++) {
                 if (json.Ratings[i].Source === "Rotten Tomatoes") {
                     console.log("Rotten Tomatoes Rating of the movie: " + json.Ratings[i].Value);
-                }
+                    var justForLog = json.Ratings[i].Value;
+                };
             };
             console.log("Country where the movie was produced: " + json.imdbRating);
             console.log("Language of the movie: " + json.Language);
             console.log("Plot of the movie: " + json.Plot);
             console.log("Actors in the movie: " + json.Actors);
+            logIt("logging myMovie<>"+json.Title+","+json.Year+","+json.imdbRating+","+justForLog+","+json.imdbRating+","+json.Language+","+json.Plot+","+json.Actors);
         };
     });
 };
@@ -135,6 +139,7 @@ function doIt() {
                     if (!arr[1]) {
                         arr[1] = defaultSong;
                     };
+                    logIt("logging doIt-calling mySong");
                     mySong(arr[1]);
                     break;
                 case "movie-this":
@@ -142,10 +147,8 @@ function doIt() {
                     if (!arr[1]) {
                         arr[1] = defaultMovie;
                     };
+                    logIt("logging doIt-calling myMovie");
                     myMovie(arr[1]);
-                    break;
-                case "do-what-it-says":
-                    doIt();
                     break;
                 default:
                     console.log("Action in file not supported");
@@ -154,3 +157,13 @@ function doIt() {
         };
     });
 };
+
+function logIt(info){
+
+    fs.appendFile(LOG_FILE_NAME, info + '\r\n', function (err){
+        if (err){
+            console.err('error');
+        }
+        //console.log(getUserInput);
+    });
+}
