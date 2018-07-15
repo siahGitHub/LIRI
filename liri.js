@@ -10,11 +10,9 @@ var client = new Twitter(keys.twitter);
 var action = process.argv[2];
 var userInput = process.argv.slice(3).join(' ');
 const defaultSong = "The Sign";
+const defaultMovie = "Mr. Nobody"
 
-//check if user has provided data else set song to default
-if(!userInput){
-    userInput = defaultSong;
-};
+
 
 //Conditional check to see which api to call
 switch (action) {
@@ -22,10 +20,18 @@ switch (action) {
         myTweets();
         break;
     case "spotify-this-song":
+        //check if user has provided data else set song to default
+        if (!userInput) {
+            userInput = defaultSong;
+        };
         mySong(userInput);
         break;
     case "movie-this":
-        movie(movieName);
+        //check if user has provided data else set song to default
+        if (!userInput) {
+            userInput = defaultMovie;
+        };
+        myMovie(userInput);
         break;
     case "do-what-it-says":
         doIt();
@@ -56,7 +62,7 @@ function myTweets() {
     });
 };
 
-//Function that calls spotify to search info about song provided by user
+//Function that calls spotify api to search info about song provided by user
 function mySong(songname) {
     
     spotify.search({ type: 'track', query: songname }, function (err, data) {
@@ -74,3 +80,27 @@ function mySong(songname) {
         };
     });
 };
+
+//Function that calls imdb api to search info about the movie provided by user
+function myMovie(moviename){
+
+var queryUrl = "http://www.omdbapi.com/?t=" + moviename + "&y=&plot=short&apikey=trilogy";
+// Then create a request to the queryUrl
+// Set the options on the request before call the request method
+const options = {  
+    url: queryUrl,
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+        'Accept-Charset': 'utf-8'
+    }
+};
+
+request(options, function(err, res, body) {  
+// If the request is successful
+  if (!err && res.statusCode === 200) {
+    let json = JSON.parse(body);
+    console.log(json.Year);
+  }
+});
+}
