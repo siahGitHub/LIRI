@@ -51,21 +51,19 @@ function myTweets() {
 };
 
 function mySong(songname) {
-    /*
-    spotify
-        .search({ type: 'track', query: songname })
-        .then(function (response) {
-            console.log(response);
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
-*/
+    
     spotify.search({ type: 'track', query: songname }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
         }
-
-        console.log(JSON.stringify(data));
+        for (i=0; i < data.tracks.items.length; i++){
+        
+        console.log("Artist Name: "+data.tracks.items[i].album.artists[0].name);
+        console.log("Track Name: "+data.tracks.items[i].name);
+        console.log("Preview Url: "+data.tracks.items[i].preview_url);
+        console.log("Album Name: "+data.tracks.items[i].album.name);
+        console.log("++++++++++++++++Next Track+++++++++++++++++++++++++++++++++++")
+       
+        };
     });
 };
