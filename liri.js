@@ -1,6 +1,7 @@
 require("dotenv").config();
 var keys = require("./keys");
 const request = require('request');
+const fs = require('fs');
 var Spotify = require('node-spotify-api');
 var Twitter = require('twitter');
 
@@ -11,6 +12,7 @@ var action = process.argv[2];
 var userInput = process.argv.slice(3).join(' ');
 const defaultSong = "The Sign";
 const defaultMovie = "Mr. Nobody"
+const FILE_NAME = 'random.txt';
 
 
 
@@ -64,19 +66,19 @@ function myTweets() {
 
 //Function that calls spotify api to search info about song provided by user
 function mySong(songname) {
-    
+
     spotify.search({ type: 'track', query: songname }, function (err, data) {
         if (err) {
             return console.log('Error occurred: ' + err);
         }
-        for (i=0; i < data.tracks.items.length; i++){
-        
-        console.log("Artist Name: "+data.tracks.items[i].album.artists[0].name);
-        console.log("Track Name: "+data.tracks.items[i].name);
-        console.log("Preview Url: "+data.tracks.items[i].preview_url);
-        console.log("Album Name: "+data.tracks.items[i].album.name);
-        console.log("++++++++++++++++Next Track+++++++++++++++++++++++++++++++++++")
-       
+        for (i = 0; i < data.tracks.items.length; i++) {
+
+            console.log("Artist Name: " + data.tracks.items[i].album.artists[0].name);
+            console.log("Track Name: " + data.tracks.items[i].name);
+            console.log("Preview Url: " + data.tracks.items[i].preview_url);
+            console.log("Album Name: " + data.tracks.items[i].album.name);
+            console.log("++++++++++++++++Next Track+++++++++++++++++++++++++++++++++++")
+
         };
     });
 };
@@ -110,8 +112,44 @@ function myMovie(moviename) {
             };
             console.log("Country where the movie was produced: " + json.imdbRating);
             console.log("Language of the movie: " + json.Language);
-            console.log("Plot of the movie: " +json.Plot);
+            console.log("Plot of the movie: " + json.Plot);
             console.log("Actors in the movie: " + json.Actors);
         };
     });
-}
+};
+
+function doIt() {
+    fs.readFile(FILE_NAME, "utf8", function (err, data) {
+        if (err) {
+            console.log(err.message);
+        }
+        else {
+            //console.log(data);
+
+            arr = data.split(",");
+
+            switch (arr[0]) {
+                case "spotify-this-song":
+                    //check if user has provided data else set song to default
+                    if (!arr[1]) {
+                        arr[1] = defaultSong;
+                    };
+                    mySong(arr[1]);
+                    break;
+                case "movie-this":
+                    //check if user has provided data else set song to default
+                    if (!arr[1]) {
+                        arr[1] = defaultMovie;
+                    };
+                    myMovie(arr[1]);
+                    break;
+                case "do-what-it-says":
+                    doIt();
+                    break;
+                default:
+                    console.log("Action in file not supported");
+            };
+
+        };
+    });
+};
