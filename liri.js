@@ -8,14 +8,15 @@ var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
 var action = process.argv[2];
-var defaultSong = "The Sign";
+var userInput = process.argv.slice(3).join(' ');
+const defaultSong = "The Sign";
 
 switch (action) {
     case "my-tweets":
         myTweets();
         break;
     case "spotify-this-song":
-        spotify(songName);
+        mySong(userInput);
         break;
     case "movie-this":
         movie(movieName);
@@ -46,5 +47,25 @@ function myTweets() {
 
             };
         };
+    });
+};
+
+function mySong(songname) {
+    /*
+    spotify
+        .search({ type: 'track', query: songname })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+*/
+    spotify.search({ type: 'track', query: songname }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+
+        console.log(JSON.stringify(data));
     });
 };
