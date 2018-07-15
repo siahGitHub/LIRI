@@ -11,6 +11,12 @@ var action = process.argv[2];
 var userInput = process.argv.slice(3).join(' ');
 const defaultSong = "The Sign";
 
+//check if user has provided data else set song to default
+if(!userInput){
+    userInput = defaultSong;
+};
+
+//Conditional check to see which api to call
 switch (action) {
     case "my-tweets":
         myTweets();
@@ -28,8 +34,8 @@ switch (action) {
         console.log("Action is not defined");
 };
 
+//Function that calls twitter api to return 20 latest tweets
 function myTweets() {
-
 
     var params = { screen_name: 'dwaynemhinds' };
     client.get('statuses/user_timeline', params, function (error, tweets, response) {
@@ -50,6 +56,7 @@ function myTweets() {
     });
 };
 
+//Function that calls spotify to search info about song provided by user
 function mySong(songname) {
     
     spotify.search({ type: 'track', query: songname }, function (err, data) {
