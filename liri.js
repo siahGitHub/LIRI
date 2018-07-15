@@ -118,6 +118,7 @@ function myMovie(moviename) {
     });
 };
 
+//Function that reads file and excutes the spotify or OMDB api call depending on the contents in the file
 function doIt() {
     fs.readFile(FILE_NAME, "utf8", function (err, data) {
         if (err) {
