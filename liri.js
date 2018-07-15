@@ -82,25 +82,36 @@ function mySong(songname) {
 };
 
 //Function that calls imdb api to search info about the movie provided by user
-function myMovie(moviename){
+function myMovie(moviename) {
 
-var queryUrl = "http://www.omdbapi.com/?t=" + moviename + "&y=&plot=short&apikey=trilogy";
-// Then create a request to the queryUrl
-// Set the options on the request before call the request method
-const options = {  
-    url: queryUrl,
-    method: 'GET',
-    headers: {
-        'Accept': 'application/json',
-        'Accept-Charset': 'utf-8'
-    }
-};
+    var queryUrl = "http://www.omdbapi.com/?t=" + moviename + "&y=&plot=short&apikey=trilogy";
+    // Then create a request to the queryUrl
+    // Set the options on the request before call the request method
+    const options = {
+        url: queryUrl,
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Accept-Charset': 'utf-8'
+        }
+    };
 
-request(options, function(err, res, body) {  
-// If the request is successful
-  if (!err && res.statusCode === 200) {
-    let json = JSON.parse(body);
-    console.log(json.Year);
-  }
-});
+    request(options, function (err, res, body) {
+        // If the request is successful
+        if (!err && res.statusCode === 200) {
+            let json = JSON.parse(body);
+            console.log("Title of the movie: " + json.Title);
+            console.log("Year the movie came out: " + json.Year);
+            console.log("IMDB Rating of the movie: " + json.imdbRating);
+            for (i = 0; i < json.Ratings.length; i++) {
+                if (json.Ratings[i].Source === "Rotten Tomatoes") {
+                    console.log("Rotten Tomatoes Rating of the movie: " + json.Ratings[i].Value);
+                }
+            };
+            console.log("Country where the movie was produced: " + json.imdbRating);
+            console.log("Language of the movie: " + json.Language);
+            console.log("Plot of the movie: " +json.Plot);
+            console.log("Actors in the movie: " + json.Actors);
+        };
+    });
 }
